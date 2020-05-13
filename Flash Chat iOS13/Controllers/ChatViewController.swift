@@ -31,19 +31,19 @@ class ChatViewController: UIViewController {
     }
     
     func loadMessages() {
-        
+          messages = []
         db.collection(K.FStore.collectionName)
             .order(by: K.FStore.dateField)
             .addSnapshotListener { (querySnapshot, error) in
             
-            self.messages = []
+          
             
             if let e = error {
                 print("There was an issue retrieving data from Firestore. \(e)")
             } else {
-                if let snapshotDocuments = querySnapshot?.documents {
+                if let snapshotDocuments = querySnapshot?.documentChanges {
                     for doc in snapshotDocuments {
-                        let data = doc.data()
+                        let data = doc.document
                         if let messageSender = data[K.FStore.senderField] as? String, let messageBody = data[K.FStore.bodyField] as? String {
                             let newMessage = Message(sender: messageSender, body: messageBody)
                             self.messages.append(newMessage)
@@ -63,6 +63,7 @@ class ChatViewController: UIViewController {
     @IBAction func sendPressed(_ sender: UIButton) {
         
         if let messageBody = messageTextfield.text, let messageSender = Auth.auth().currentUser?.email {
+            if messageBody != "" {
             db.collection(K.FStore.collectionName).addDocument(data: [
                 K.FStore.senderField: messageSender,
                 K.FStore.bodyField: messageBody,
@@ -77,6 +78,9 @@ class ChatViewController: UIViewController {
                          self.messageTextfield.text = ""
                     }
                 }
+            }
+                } else {
+                print("MessageBody is empty")
             }
         }
     }
