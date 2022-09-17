@@ -1,6 +1,6 @@
 ![App Brewery Banner](Documentation/AppBreweryBanner.png)
 
-# Flash-Chat --- changed
+# Flash-Chat --- changed in github
 
 ## Our Goal
 
